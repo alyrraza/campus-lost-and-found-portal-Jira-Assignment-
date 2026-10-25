@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Profile - CLFP</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<header><h1>Campus Lost & Found Portal</h1></header>
+<nav>
+  <a href="../index.html">Home</a>
+  <a href="register.html">Register</a>
+  <a href="report-lost.html">Report Lost Item</a>
+  <a href="report-found.html">Report Found Item</a>
+  <a href="search.html">Search Items</a>
+  <a href="claim.html">Claim Item</a>
+  <a href="profile.html">My Profile</a>
+  <a href="admin.html">Admin</a>
+</nav>
+<main>
+  <h2>My Profile</h2>
+
+  <label for="emailLookup">Enter your email to view your activity</label>
+  <input type="email" id="emailLookup" placeholder="you@cfd.nu.edu.pk">
+  <button id="lookupBtn">View My Activity</button>
+
+  <h3>Items I Reported</h3>
+  <div id="myItems"></div>
+
+  <h3>My Claim Requests</h3>
+  <div id="myClaims"></div>
+</main>
+
+<script src="../js/app.js"></script>
+<script>
+  document.getElementById('lookupBtn').addEventListener('click', () => {
+    const email = document.getElementById('emailLookup').value.trim().toLowerCase();
+
+    const myItems = Store.getItems().filter(it => it.reporter && it.reporter.toLowerCase() === email);
+    const itemsDiv = document.getElementById('myItems');
+    itemsDiv.innerHTML = myItems.length
+      ? myItems.map(it => `<div class="card">${it.title} - <span class="badge">${it.status}</span> (${it.type}, reported ${it.date})</div>`).join('')
+      : '<p>No items reported with this email yet.</p>';
+
+    const myClaims = Store.getClaims().filter(c => c.claimant && c.claimant.toLowerCase() === email);
+    const claimsDiv = document.getElementById('myClaims');
+    claimsDiv.innerHTML = myClaims.length
+      ? myClaims.map(c => `<div class="card">Claim ${c.id} - <span class="badge">${c.status}</span> (submitted ${c.date})</div>`).join('')
+      : '<p>No claim requests with this email yet.</p>';
+  });
+</script>
+</body>
+</html>
